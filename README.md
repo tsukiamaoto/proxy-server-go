@@ -6,21 +6,35 @@
 
 ## Installation
 
-``` 
+### Install with Docker And Run
+
+``` bash
+docker-compose up -d
+```
+
+### Close proxy-server services
+
+``` bash
+docker-compose down
+```
+
+### Install from source
+
+``` bash
 go get github.com/tsukiamaoto/proxy-server-go
 ```
 
 ## Run
 
-1. 先安裝redis server
+### 1.先安裝redis server
 
 資料會暫存在redis裡面，需要先啟動redis server。
 
 照著在[redis document](https://redis.io/docs/getting-started/installation/)的文件安裝，然後啟動redis server。
 
-2. 啟動程式
+### 2.啟動程式
 
-``` 
+``` bash
 go run main.go
 ```
 
@@ -33,7 +47,6 @@ go run main.go
 | Api           | Method | Description     | Params |
 |---------------|--------|-----------------|--------|
 | /api/v1/proxy | Get    | Get all proxies | None   |
-
 
 ## Free Proxy List
 

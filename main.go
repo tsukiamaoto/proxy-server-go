@@ -30,6 +30,7 @@ func main() {
 	server.GET("/api/v1/proxy", func(c *gin.Context) {
 		proxies := redisDB.Get("proxy")
 		c.JSON(200, DataResponse{Data: proxies})
+
 	})
 
 	server.Run(config.ServerAddress)

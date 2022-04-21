@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
+	log "github.com/sirupsen/logrus"
 )
 
 type Config struct {
@@ -25,14 +26,20 @@ type Database struct {
 
 func LoadConfig() *Config {
 	viper.AddConfigPath(".")
-	viper.SetConfigName("app")
+	viper.AddConfigPath("../")
+	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 
 	viper.AutomaticEnv()
 
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {
-		panic("讀取設定檔出現錯誤，錯誤的原因為" + err.Error())
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			// Config file not found; ignore error if desired
+			log.Error("Config file not found")
+		} else {
+			// Config file was found but another error was produced
+			panic("讀取設定檔出現錯誤，錯誤的原因為" + err.Error())
+		}
 	}
 
 	serverAddress := fmt.Sprintf("%s:%d", viper.GetString("application.host"), viper.GetInt("application.port"))

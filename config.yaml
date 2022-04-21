@@ -1,0 +1,12 @@
+application:
+  timeout:
+    read: 1000
+    write: 1000
+  port: 8787
+  host: ""
+  mode: "env"
+
+redis:
+  host: "redis:6379"
+  password: ""
+  db: 0
