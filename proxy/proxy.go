@@ -4,7 +4,6 @@ import (
 	"tsukiamaoto/proxy-server-go/redis"
 
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -78,10 +77,6 @@ func ScrapeProxy(url string) []Proxy {
 		}
 
 		proxies = append(proxies, proxy)
-	})
-
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL)
 	})
 
 	c.Visit(url)

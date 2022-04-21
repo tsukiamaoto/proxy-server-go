@@ -1,12 +1,15 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	AllowOrigins []string
-	Redis        *Redis
+	ServerAddress string
+	AllowOrigins  []string
+	Redis         *Redis
 }
 
 type Redis struct {
@@ -32,6 +35,7 @@ func LoadConfig() *Config {
 		panic("讀取設定檔出現錯誤，錯誤的原因為" + err.Error())
 	}
 
+	serverAddress := fmt.Sprintf("%s:%d", viper.GetString("application.host"), viper.GetInt("application.port"))
 	redis := &Redis{
 		Address:  viper.GetString("redis.host"),
 		Password: viper.GetString("redis.password"),
@@ -40,6 +44,7 @@ func LoadConfig() *Config {
 	allowOrigins := viper.GetStringSlice("application.cors.allowOrigins")
 
 	config := &Config{
+		ServerAddress: serverAddress,
 		Redis:        redis,
 		AllowOrigins: allowOrigins,
 	}

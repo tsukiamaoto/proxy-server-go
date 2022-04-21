@@ -28,7 +28,7 @@ go run main.go
 
 * Api
 
-啟動web services後，在默認的配置下訪問[http://127.0.0.1:8080/](http://127.0.0.1:8080/) 的API：
+啟動web services後，在默認的配置下訪問[http://127.0.0.1:8787/](http://127.0.0.1:8787/) 的API：
 
 | Api           | Method | Description     | Params |
 |---------------|--------|-----------------|--------|

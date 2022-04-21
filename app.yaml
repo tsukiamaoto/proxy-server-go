@@ -2,7 +2,7 @@ application:
   timeout:
     read: 1000
     write: 1000
-  port: 8088
+  port: 8787
   host: "localhost"
   mode: "debug"
   appId: "go"

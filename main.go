@@ -1,6 +1,7 @@
 package main
 
 import (
+	Config "tsukiamaoto/proxy-server-go/config"
 	"tsukiamaoto/proxy-server-go/proxy"
 	"tsukiamaoto/proxy-server-go/redis"
 
@@ -20,7 +21,10 @@ func init() {
 }
 
 func main() {
+	// fetch proxy list
 	go autoFetchProxy()
+	// load config
+	config := Config.LoadConfig()
 
 	server := gin.Default()
 	server.GET("/api/v1/proxy", func(c *gin.Context) {
@@ -28,7 +32,7 @@ func main() {
 		c.JSON(200, DataResponse{Data: proxies})
 	})
 
-	server.Run()
+	server.Run(config.ServerAddress)
 }
 
 func autoFetchProxy() {
