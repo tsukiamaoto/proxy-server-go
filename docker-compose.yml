@@ -2,13 +2,21 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build: 
+      context: .
     ports:
       - "8787:8787"
-    depends_on:
-      - redis
+    networks:
+      - proxy-server
 
   redis:
-    image: redis
+    container_name: "redis"
+    image: redislabs/rejson
     ports:
       - "6379:6379"
+    networks:
+      - proxy-server
+
+networks:
+  proxy-server:
+    driver: bridge

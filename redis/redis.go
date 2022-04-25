@@ -4,72 +4,56 @@ import (
 	Config "tsukiamaoto/proxy-server-go/config"
 
 	"context"
-	"time"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/nitishm/go-rejson/v4"
 	log "github.com/sirupsen/logrus"
 )
 
 type Redis struct {
-	RDB *redis.Client
+	Handler *rejson.Handler
+	Client  *redis.Client
 }
 
 var ctx = context.Background()
 
 func New() *Redis {
 	config := Config.LoadConfig()
-	RDB := redis.NewClient(&redis.Options{
+	client := redis.NewClient(&redis.Options{
 		Addr:     config.Redis.Address,
 		Password: config.Redis.Password,
 		DB:       config.Redis.DB,
 	})
 
+	handler := rejson.NewReJSONHandler()
+	handler.SetGoRedisClient(client)
+
 	return &Redis{
-		RDB: RDB,
+		Handler: handler,
+		Client:  client,
 	}
 }
 
-func (r *Redis) ConnectRDB() {
-	_, err := r.RDB.Ping(ctx).Result()
+func (r *Redis) JSONGet(key, path string) interface{} {
+	value, err := r.Handler.JSONGet(key, path)
 	if err != nil {
-		log.Error(err)
-	}
-}
-
-func (r *Redis) Get(key string) string {
-	value, err := r.RDB.Get(ctx, key).Result()
-	if err != nil {
-		log.Error(err)
+		log.Error("Failed to JSONGet: ", err)
+		return nil
 	}
 	return value
 }
 
-func (r *Redis) Set(key string, value interface{}) {
-	_, err := r.RDB.Set(ctx, key, value, 0).Result()
+func (r *Redis) JSONSet(key, path string, value interface{}) {
+	_, err := r.Handler.JSONSet(key, path, value)
 	if err != nil {
-		log.Error(err)
-	}
-}
-
-func (r *Redis) GetEx(key string, expiration time.Duration) string {
-	value, err := r.RDB.GetEx(ctx, key, expiration).Result()
-	if err != nil {
-		log.Error(err)
-	}
-	return value
-}
-
-func (r *Redis) SetEx(key string, value interface{}, expiration time.Duration) {
-	_, err := r.RDB.Set(ctx, key, value, expiration).Result()
-	if err != nil {
-		log.Error(err)
+		log.Error("Failed to JSONSet: ", err)
 	}
 }
 
 func (r *Redis) Exists(key string) bool {
-	ok, err := r.RDB.Exists(ctx, key).Result()
+	ok, err := r.Client.Exists(ctx, key).Result()
 	if err != nil {
-		log.Error(err)
+		log.Error("Failed to Exists: ", err)
 	}
 
 	return ok == 1

@@ -3,7 +3,6 @@ package proxy
 import (
 	"tsukiamaoto/proxy-server-go/redis"
 
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -30,7 +29,6 @@ var redisDB *redis.Redis
 
 func init() {
 	redisDB = redis.New()
-	redisDB.ConnectRDB()
 }
 
 func FetchTask() {
@@ -57,8 +55,7 @@ func FetchTask() {
 	}
 
 	// if proxy is ok, set value to redis for caching
-	jsonProxies, _ := json.Marshal(aliveProxies)
-	redisDB.Set("proxy", jsonProxies)
+	redisDB.JSONSet("proxy", ".", aliveProxies)
 }
 
 func ScrapeProxy(url string) []Proxy {
