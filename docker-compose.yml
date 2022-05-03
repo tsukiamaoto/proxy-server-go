@@ -2,12 +2,15 @@ version: '3.8'
 
 services:
   app:
+    container_name: proxy-server
     build: 
       context: .
     ports:
       - "8787:8787"
+    restart: always
     networks:
       - proxy-server
+      - redis
 
   redis:
     container_name: "redis"
@@ -15,8 +18,12 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - proxy-server
+      - redis
 
 networks:
   proxy-server:
+    name: proxy-server
+    driver: bridge
+  redis:
+    name: redis
     driver: bridge

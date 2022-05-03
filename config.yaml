@@ -1,6 +1,6 @@
 application:
   port: 8787
-  host: ""
+  host: "proxy-server"
   mode: "env"
 
 redis:
